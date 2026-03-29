@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nachtdienst Wiki</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2330;
+    --border: #30363d;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --airway: #f78166;
+    --breathing: #56d364;
+    --circulation: #ff7b72;
+    --disability: #d2a8ff;
+    --else: #ffa657;
+    --kreisssaal: #79c0ff;
+    --fachrichtung: #56d364;
+    --weiteres: #e3b341;
+    --allgemein: #58a6ff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    height: 60px;
+  }
+
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--text);
+    white-space: nowrap;
+    letter-spacing: -0.02em;
+  }
+
+  .logo span {
+    color: var(--accent);
+  }
+
+  .search-wrap {
+    flex: 1;
+    max-width: 480px;
+    position: relative;
+  }
+
+  .search-wrap svg {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+  }
+
+  #search {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px 8px 38px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  #search:focus {
+    border-color: var(--accent);
+  }
+
+  #search::placeholder { color: var(--text-muted); }
+
+  /* LAYOUT */
+  .container {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    min-height: calc(100vh - 60px);
+  }
+
+  /* SIDEBAR */
+  nav {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 1.5rem 0;
+    position: sticky;
+    top: 60px;
+    height: calc(100vh - 60px);
+    overflow-y: auto;
+  }
+
+  nav .nav-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 0 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  nav a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 1.25rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 13.5px;
+    transition: color 0.15s, background 0.15s;
+    border-left: 2px solid transparent;
+  }
+
+  nav a:hover {
+    color: var(--text);
+    background: var(--surface2);
+  }
+
+  nav a.active {
+    color: var(--accent);
+    border-left-color: var(--accent);
+    background: rgba(88, 166, 255, 0.07);
+  }
+
+  nav a .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* MAIN */
+  main {
+    padding: 2rem 2.5rem;
+    max-width: 900px;
+  }
+
+  /* HERO */
+  .hero {
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 2rem;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.4rem;
+  }
+
+  .hero p {
+    color: var(--text-muted);
+    font-size: 14px;
+    max-width: 500px;
+  }
+
+  .stats {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 1.2rem;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* SECTIONS */
+  .section {
+    margin-bottom: 2.5rem;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+  }
+
+  .section-tag {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 100px;
+    background: rgba(255,255,255,0.06);
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: -0.01em;
+  }
+
+  /* ENTRIES */
+  .entries {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .entry {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 16px;
+    background: var(--surface);
+    transition: background 0.15s;
+    text-decoration: none;
+    color: var(--text);
+    gap: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .entry:last-child { border-bottom: none; }
+
+  .entry:hover {
+    background: var(--surface2);
+  }
+
+  .entry-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .entry-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 13px;
+  }
+
+  .entry-title {
+    font-size: 13.5px;
+    font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .entry-title.no-link {
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  .entry-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .bearbeiter {
+    font-size: 12px;
+    color: var(--text-muted);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 2px 9px;
+  }
+
+  .arrow {
+    color: var(--text-muted);
+    opacity: 0.5;
+    font-size: 13px;
+  }
+
+  .entry:hover .arrow { opacity: 1; color: var(--accent); }
+
+  /* NO RESULTS */
+  .no-results {
+    display: none;
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-muted);
+  }
+
+  .no-results.visible { display: block; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* MOBILE */
+  @media (max-width: 700px) {
+    .container { grid-template-columns: 1fr; }
+    nav { display: none; }
+    main { padding: 1.5rem; }
+    .hero h1 { font-size: 1.5rem; }
+    .entry-title { white-space: normal; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Nacht<span>dienst</span></div>
+  <div class="search-wrap">
+    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+    </svg>
+    <input id="search" type="text" placeholder="Thema suchen…" autocomplete="off">
+  </div>
+</header>
+
+<div class="container">
+  <nav id="sidebar">
+    <div class="nav-label">Kategorien</div>
+    <a href="#allgemein" class="active"><span class="dot" style="background:var(--allgemein)"></span>Allgemein</a>
+    <a href="#airway"><span class="dot" style="background:var(--airway)"></span>Airway</a>
+    <a href="#breathing"><span class="dot" style="background:var(--breathing)"></span>Breathing</a>
+    <a href="#circulation"><span class="dot" style="background:var(--circulation)"></span>Circulation</a>
+    <a href="#disability"><span class="dot" style="background:var(--disability)"></span>Disability</a>
+    <a href="#else"><span class="dot" style="background:var(--else)"></span>Else</a>
+    <a href="#kreisssaal"><span class="dot" style="background:var(--kreisssaal)"></span>Kreißsaal</a>
+    <a href="#fachrichtung"><span class="dot" style="background:var(--fachrichtung)"></span>Fachrichtung</a>
+    <a href="#weiteres"><span class="dot" style="background:var(--weiteres)"></span>Weiteres</a>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <h1>Tipps für den Nachtdienst</h1>
+      <p>Sammlung von SOPs und Tipps. Klicke auf ein Thema um das Dokument zu öffnen.</p>
+      <div class="stats">
+        <div class="stat"><span class="stat-num">25</span><span class="stat-label">Themen</span></div>
+        <div class="stat"><span class="stat-num">9</span><span class="stat-label">Kategorien</span></div>
+      </div>
+    </div>
+
+    <div id="no-results" class="no-results">Keine Ergebnisse für diese Suche.</div>
+
+    <!-- ALLGEMEIN -->
+    <div class="section" id="allgemein" data-section>
+      <div class="section-header">
+        <div class="section-tag" style="color:var(--allgemein)">Allgemein</div>
+      </div>
+      <div class="entries">
+        <a class="entry" href="https://docs.google.com/document/d/16J4qdI97Ljn8DuKcXpYLYSA7726bJ0Oj/edit" target="_blank">
+          <div class="entry-left">
+            <div class="entry-icon" style="background:rgba(88,166,255,0.12)">📋</div>
+            <span class="entry-title">Allgemeine Tipps</span>
+          </div>
+          <div class="entry-right"><span class="bearbeiter">offen</span><span class="arrow">↗</span></div>
+        </a>
+        <a class="entry" href="https://docs.google.com/document/d/1YuOLTOroLvyfRcW-dM9wUDZXSCsSIiiF/edit" target="_blank">
+          <div class="entry-left">
+            <div class="entry-icon" style="background:rgba(88,166,255,0.12)">📋</div>
+            <span class="entry-title">Logistisches zum Nachschlagen</span>
+          </div>
+          <div class="entry-right"><span class="bearbeiter">offen</span><span class="arrow">↗</span></div>
+        </a>
+      </div>
+    </div>
+
+    <!-- AIRWAY -->
+    <div class="section" id="airway" data-section>
+      <div class="section-header">
+        <div class="section-tag" style="color:var(--airway)">Airway</div>
+      </div>
+      <div class="entries">
+        <a class="entry" href="https://docs.google.com/document/d/17zC-bV6TN7_LogXDqwh1YJ54Jh9pSAia/edit" target="_blank">
+          <div class="entry-left">
+            <div class="entry-icon" style="background:rgba(247,129,102,0.12)">🫁</div>
+            <span class="entry-title">(Schwierige) Notfallintubation antizipieren und durchführen inkl. Preoxi und RSI</span>
+          </div>
+          <div class="entry-right"><span class="bearbeiter">Rosenbaum</span><span class="arrow">↗</span></div>
+        </a>
+        <a class="entry" href="https://docs.google.com/document/d/1Qj_Q6MLffjOTjUH6oF4yTGTkLP3TvVqp/edit" target="_blank">
+          <div class="entry-left">
+            <div class="entry-icon" style="background:rgba(247,129,102,0.12)">🫁</div>
+            <span class="entry-title">Ileuseinleitung, SALAD und Aspiration</span>
+          </div>
+          <div class="entry-right"><span class="arrow">↗</span></div>
+        </a>
+        <a class="entry" href="https://docs.google.com/document/d/1tQzoZ4G6TxtLsV9Du07c77Xvuy5NjLGy/edit" target="_blank">
+          <div class="entry-left">
+            <div class="entry-icon" style="background:rgba(247,129,102,0.12)">🫁</div>
+            <span class="entry-title">Wachintubation</span>
+          </div>
+          <div class="entry-right"><span class="arrow">↗</span></div>
+        </a>
+        <a class="entry" href="https://docs.google.com/document/d/1p9amS4brIStA3hpWPaESzCWJTdMTnTPT/edit" target="_blank">
+          <div class="entry-left">
+            <div class="entry-icon" style="background:rgba(247,129,102,0.12)">🫁</div>
+            <span class="entry-title">Koniotomie</span>
+          </div>
+          <div class="entry-right"><span class="bearbeiter">Rosenbaum</span><span class="arrow">↗</span></div>
+        </a>
+        <a class="entry" href="https://docs.google.com/document/d/147Hna3EOVmqrKp6bv9Dy4i98j8-xkyjX/edit" target="_blank">
+          <div class="entry-left">
+            <div class="entry-icon" style="background:rgba(247,129,102,0.12)">🫁</div>
+            <span class="entry-title">Know your Videolaryngoscope</span>
+          </div>
+          <div class="entry-right"><span class="bearbeiter">Rosenbaum</span><span class="arrow">↗</span></div>
+        </a>
+      </div>
+    </div>
+
+    <!-- BREATHING -->
+    <div class="section" id="breathing" data-section>
+      <div class="section-header">
+        <div class="section-tag" style="color:var(--breathing)">Breathing</div>
+      </div>
+      <div class="entries">
+        <a class="entry" href="https://docs.google.com/document/d/1Zr2Es2V8Ij0usbnt-suzW1OvIU0pBUIa/edit" target="_blank">
+          <div class="entry-left">
+            <div class="entry-icon" style="background:rgba(86,211,100,0.12)">💨</div>
+            <span class="entry-title">Schlechte Sättigung und/oder Atemnot: wo liegt das Problem und wie löse ich es?</span>
+          </div>
+          <div class="entry-right"><span class="arrow">↗</span></div>
+        </a>
+        <a class="entry" href="https://docs.google.com/document/d/1H7U2lyx6WCIkOfOv8IJ3CZgqPMAmV67H/edit" target="_blank">
+          <div class="entry-left">
+            <div class="entry-icon" style="background:rgba(86,211,100,0.12)">💨</div>
+            <span class="entry-title">Pneumothorax</span>
+          </div>
+          <div class="entry-right"><span class="arrow">↗</span></div>
+        </a>
+      </div>
+    </div>
+
+    <!-- CIRCULATION -->
+    <div class="section" id="circulation" data-section>
+      <div class="section-header">
+        <div class="section-tag" style="color:var(--circulation)">Circulation</div>
+      </div>
+      <div class="entries">
+        <a class="entry" href="https://docs.google.com/document/d/1Lu4EO8jgCWyqH6yrmjPa9Bh2cxjqcDis/edit" target="_blank">
+          <div class="entry-left">
+            <div class="entry-icon" style="background:rgba(255,123,114,0.12)">❤️</div>
+            <span class="entry-title">Schockraum, Ablauf und kritische Patient:innen</span>
+          </div>
+          <div class="entry-right"><span class="arrow">↗</span></div>
+        </a>
+        <a class="entry" href="https://docs.google.com/document/d/1tnBMl1SPRnJSJII9PAAmmlzw9r7TEUGE/edit" target="_blank">
+          <div class="entry-left">
+            <div class="entry-icon" style="background:rgba(255,123,114,0.12)">❤️</div>
+            <span class="entry-title">Blutung</span>
+          </div>
+          <div class="entry-right"><span class="bearbeiter">Rosenbaum</span><span class="arrow">↗</span></div>
+        </a>
+        <a class="entry" href="https://docs.google.com/document/d/1xkIwCBVs_i-SDjfy5bpZnsbFsLv9dohv/edit" target="_blank">
+          <div class="entry-left">
+            <div class="entry-icon" style="background:rgba(255,123,114,0.12)">❤️</div>
+            <span class="entry-title">Sepsis</span>
+          </div>
+          <div class="entry-right"><span class="bearbeiter">Rosenbaum</span><span class="arrow">↗</span></div>
+        </a>
+        <div class="entry">
+          <div class="entry-left">
+            <div class="entry-icon" style="background:rgba(255,123,114,0.12)">❤️</div>
+            <span class="entry-title no-link">Anaphylaxie (Link fehlt noch)</span>
+          </div>
+        </div>
+        <a class="entry" href="https://docs.google.com/document/d/1_mFm7FkDRDEQlE-ZQ-H-_xhvP9pTNG4C/edit" target="_blank">
+          <div class="entry-left">
+            <div class="entry-icon" style="background:rgba(255,123,114,0.12)">❤️</div>
+            <span class="entry-title">Reanimation</span>
+          </div>
+          <div class="entry-right"><span class="bearbeiter">Rosenbaum</span><span class="arrow">↗</span></div>
+        </a>
+        <a class="entry" href="https://docs.google.com/document/d/1RzxUbpMa64jQ2eGxCDs07euC5PQuvwpJ/edit" target="_blank">
+          <div class="entry-left">
+            <div class="entry-icon" style="background:rgba(255,123,114,0.12)">❤️</div>
+            <span class="entry-title">Schlechtes Herz</span>
+          </div>
+          <div class="entry-right"><span class="arrow">↗</span></div>
+        </a>
+        <a class="entry" href="https://docs.google.com/document/d/1xLF3G0msGIXJ0S_w8PS3hEnsBNtvj4FF/edit" target="_blank">
+          <div class="entry-left">
+            <div class="entry-icon" style="background:rgba(255,123,114,0.12)">❤️</div>
+            <span class="entry-title">Einleitung von instabilen Patient:innen</span>
+          </div>
+          <div class="entry-right"><span class="arrow">↗</span></div>
+        </a>
+      </div>
+    </div>
+
+    <!-- DISABILITY -->
+    <div class="section" id="disability" data-section>
+      <div class="section-header">
+        <div class="section-tag" style="color:var(--disability)">Disability</div>
+      </div>
+      <div class="entries">
+        <a class="entry" href="https://docs.google.com/document/d/12SFCyPxdAjfY9cBXiSsWVIY_vxR6-z9m/edit" target="_blank">
+          <div class="entry-left">
+            <div class="entry-icon" style="background:rgba(210,168,255,0.12)">🧠</div>
+            <span class="entry-title">Hirndruck</span>
+          </div>
+          <div class="entry-right"><span class="arrow">↗</span></div>
+        </a>
+        <a class="entry" href="https://docs.google.com/document/d/1zJMsB7Mc8BCme1F4jAw7-BrpmbcENbgb/edit" target="_blank">
+          <div class="entry-left">
+            <div class="entry-icon" style="background:rgba(210,168,255,0.12)">🧠</div>
+            <span class="entry-title">Schwierigkeiten und Komplikationen bei SpA und PDA</span>
+          </div>
+          <div class="entry-right"><span class="arrow">↗</span></div>
+        </a>
+      </div>
+    </div>
+
+    <!-- ELSE -->
+    <div class="section" id="else" data-section>
+      <div class="section-header">
+        <div class="section-tag" style="color:var(--else)">Else</div>
+      </div>
+      <div class="entries">
+        <a class="entry" href="https://docs.google.com/document/d/1iX26R1PENUE5QynHxldGVpJry7ARN4JX/edit" target="_blank">
+          <div class="entry-left">
+            <div class="entry-icon" style="background:rgba(255,166,87,0.12)">⚡</div>
+            <span class="entry-title">Hyperkaliämie und/oder Azidose</span>
+          </div>
+          <div class="entry-right"><span class="arrow">↗</span></div>
+        </a>
+        <a class="entry" href="https://docs.google.com/document/d/1ZMCviwenIav4igefV4ELLIsGjFVmg8Mr/edit" target="_blank">
+          <div class="entry-left">
+            <div class="entry-icon" style="background:rgba(255,166,87,0.12)">⚡</div>
+            <span class="entry-title">Maligne Hyperthermie</span>
+          </div>
+          <div class="entry-right"><span class="arrow">↗</span></div>
+        </a>
+        <a class="entry" href="https://docs.google.com/document/d/1Lu4EO8jgCWyqH6yrmjPa9Bh2cxjqcDis/edit" target="_blank">
+          <div class="entry-left">
+            <div class="entry-icon" style="background:rgba(255,166,87,0.12)">⚡</div>
+            <span class="entry-title">Schockraum, Ablauf und kritische Patient:innen</span>
+          </div>
+          <div class="entry-right"><span class="arrow">↗</span></div>
+        </a>
+      </div>
+    </div>
+
+    <!-- KREISSSAAL -->
+    <div class="section" id="kreisssaal" data-section>
+      <div class="section-header">
+        <div class="section-tag" style="color:var(--kreisssaal)">Kreißsaal</div>
+      </div>
+      <div class="entries">
+        <a class="entry" href="https://docs.google.com/document/d/1qMFLsre28SFbz6hlSjmqh3Erbqe5ZZGO/edit" target="_blank">
+          <div class="entry-left">
+            <div class="entry-icon" style="background:rgba(121,192,255,0.12)">👶</div>
+            <span class="entry-title">Notsectio</span>
+          </div>
+          <div class="entry-right"><span class="arrow">↗</span></div>
+        </a>
+        <a class="entry" href="https://docs.google.com/document/d/1Ukb8zLC9QTHpjZzYVNrFBM7yIVvLFqQh/edit" target="_blank">
+          <div class="entry-left">
+            <div class="entry-icon" style="background:rgba(121,192,255,0.12)">👶</div>
+            <span class="entry-title">Kreißsaal / Sectiosaal</span>
+          </div>
+          <div class="entry-right"><span class="arrow">↗</span></div>
+        </a>
+        <a class="entry" href="https://docs.google.com/document/d/1zJMsB7Mc8BCme1F4jAw7-BrpmbcENbgb/edit" target="_blank">
+          <div class="entry-left">
+            <div class="entry-icon" style="background:rgba(121,192,255,0.12)">👶</div>
+            <span class="entry-title">Schwierigkeiten und Komplikationen bei SpA und PDA</span>
+          </div>
+          <div class="entry-right"><span class="arrow">↗</span></div>
+        </a>
+      </div>
+    </div>
+
+    <!-- FACHRICHTUNG -->
+    <div class="section" id="fachrichtung" data-section>
+      <div class="section-header">
+        <div class="section-tag" style="color:var(--fachrichtung)">Fachrichtung</div>
+      </div>
+      <div class="entries">
+        <a class="entry" href="https://docs.google.com/document/d/1mIEU1rJNHA_Cc-FgfBK6C-ELnCZSSG2QmtF__G1APrc/edit" target="_blank">
+          <div class="entry-left">
+            <div class="entry-icon" style="background:rgba(86,211,100,0.12)">🏥</div>
+            <span class="entry-title">Allgemeinchirurgie</span>
+          </div>
+          <div class="entry-right"><span class="arrow">↗</span></div>
+        </a>
+      </div>
+    </div>
+
+    <!-- WEITERES -->
+    <div class="section" id="weiteres" data-section>
+      <div class="section-header">
+        <div class="section-tag" style="color:var(--weiteres)">Weiteres</div>
+      </div>
+      <div class="entries">
+        <a class="entry" href="https://docs.google.com/document/d/1Q38GRv9Irswnx0UvLwhHEUhNXhbHVbnj/edit" target="_blank">
+          <div class="entry-left">
+            <div class="entry-icon" style="background:rgba(227,179,65,0.12)">📌</div>
+            <span class="entry-title">Explantation</span>
+          </div>
+          <div class="entry-right"><span class="arrow">↗</span></div>
+        </a>
+        <a class="entry" href="https://docs.google.com/document/d/1iGKVHCYTP6GbwKkHPdMGSlu9kKRsWAPn/edit" target="_blank">
+          <div class="entry-left">
+            <div class="entry-icon" style="background:rgba(227,179,65,0.12)">📌</div>
+            <span class="entry-title">Therapieziel</span>
+          </div>
+          <div class="entry-right"><span class="bearbeiter">Rosenbaum</span><span class="arrow">↗</span></div>
+        </a>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  // Search
+  const searchInput = document.getElementById('search');
+  const sections = document.querySelectorAll('[data-section]');
+  const noResults = document.getElementById('no-results');
+
+  searchInput.addEventListener('input', () => {
+    const q = searchInput.value.toLowerCase().trim();
+    let anyVisible = false;
+
+    sections.forEach(section => {
+      const entries = section.querySelectorAll('.entry');
+      let sectionVisible = false;
+
+      entries.forEach(entry => {
+        const text = entry.textContent.toLowerCase();
+        const match = !q || text.includes(q);
+        entry.style.display = match ? '' : 'none';
+        if (match) sectionVisible = true;
+      });
+
+      section.style.display = sectionVisible ? '' : 'none';
+      if (sectionVisible) anyVisible = true;
+    });
+
+    noResults.classList.toggle('visible', !anyVisible && q.length > 0);
+  });
+
+  // Active nav on scroll
+  const navLinks = document.querySelectorAll('nav a');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        const id = entry.target.id;
+        const link = document.querySelector(`nav a[href="#${id}"]`);
+        if (link) link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
